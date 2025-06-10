@@ -26,6 +26,7 @@ abstract class QueryFilter
 
     protected function fields(): array
     {
+//        dd ($this->searchSet);
         return array_filter(
             $this->searchSet->toArray(), function ($value) {
             return isset($value);

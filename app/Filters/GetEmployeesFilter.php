@@ -18,4 +18,10 @@ class GetEmployeesFilter extends QueryFilter
     {
         $this->builder->where('email', $value);
     }
+    public function employeeStatusId(int $value): void
+    {
+        $this->builder->where('employee_status_id', $value);
+    }
+
+
 }
