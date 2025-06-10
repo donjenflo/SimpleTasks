@@ -13,5 +13,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
 
     Route::get('/employees', [EmployeeController::class, 'index']);
+    Route::post('/employee', [EmployeeController::class, 'create']);
 
 });
