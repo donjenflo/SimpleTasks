@@ -27,7 +27,14 @@ class EmployeeTest extends TestCase
 
     public function test_employee_index(): void
     {
-        $response = $this->get('/api/employees');
+        $queryParams = [
+            'name' => $this->user->name,
+            'email' => $this->user->email,
+            'employee_status_id' => 1,
+            'orderBy' => 'id',
+            'orderDirection' => 'asc',
+        ];
+        $response = $this->get('/api/employees',$queryParams);
         $response->assertStatus(200);
     }
 
@@ -40,5 +47,23 @@ class EmployeeTest extends TestCase
         ];
         $response = $this->json('POST', '/api/employee', $data);
         $response->assertStatus(201);
+    }
+
+    public function test_employee_delete(): void
+    {
+        $employeeId = User::query()->whereNot('id',$this->user->id)->first()->id;
+        $response = $this->delete( '/api/employee/'.$employeeId );
+        $response->assertStatus(200);
+    }
+    public function test_employee_update(): void
+    {
+        $data = [
+            'name' => 'Test Update',
+            'email' => 'test@update.com',
+            'password' => bcrypt('password'),
+        ];
+        $employeeId = User::query()->whereNot('id',$this->user->id)->first()->id;
+        $response = $this->put( '/api/employee/'.$employeeId, $data );
+        $response->assertStatus(200);
     }
 }

@@ -95,11 +95,11 @@ return [
     // How is your API authenticated? This information will be used in the displayed docs, generated examples and response calls.
     'auth' => [
         // Set this to true if ANY endpoints in your API use authentication.
-        'enabled' => false,
+        'enabled' => true,
 
         // Set this to true if your API should be authenticated by default. If so, you must also set `enabled` (above) to true.
         // You can then use @unauthenticated or @authenticated on individual endpoints to change their status from the default.
-        'default' => false,
+        'default' => true,
 
         // Where is the auth value meant to be sent in a request?
         'in' => AuthIn::BEARER->value,
@@ -223,20 +223,20 @@ return [
 
         ],
         'urlParameters' => [
-            ...Defaults::URL_PARAMETERS_STRATEGIES,
+//            ...Defaults::URL_PARAMETERS_STRATEGIES,
             AjCastro\ScribeTdd\Strategies\UrlParameters\GetFromUrlParamTagFromScribeTdd::class,
 
         ],
         'queryParameters' => [
-            ...Defaults::QUERY_PARAMETERS_STRATEGIES,
             AjCastro\ScribeTdd\Strategies\QueryParameters\GetFromTestResult::class,
             AjCastro\ScribeTdd\Strategies\QueryParameters\AddPaginationParametersFromScribeTdd::class,
             AjCastro\ScribeTdd\Strategies\QueryParameters\GetFromQueryParamTagFromScribeTdd::class,
+            ...Defaults::QUERY_PARAMETERS_STRATEGIES,
         ],
         'bodyParameters' => [
-            ...Defaults::BODY_PARAMETERS_STRATEGIES,
             AjCastro\ScribeTdd\Strategies\BodyParameters\GetFromTestResult::class,
             AjCastro\ScribeTdd\Strategies\BodyParameters\GetFromBodyParamTagFromScribeTdd::class,
+//            ...Defaults::BODY_PARAMETERS_STRATEGIES,
         ],
 //        'responses' => configureStrategy(
 //            Defaults::RESPONSES_STRATEGIES,

@@ -7,7 +7,7 @@ namespace App\DTO;
 use App\Filters\SearchSetInterface;
 use Illuminate\Http\Request;
 
-readonly class CreateEmployeeDTO implements SearchSetInterface
+readonly class EmployeeDTO implements SearchSetInterface
 {
     public function __construct(
         public string $name,

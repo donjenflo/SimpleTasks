@@ -22,9 +22,9 @@ class CreateEmployeeRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string',
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required|string|min:6',
+            'name' => 'string|required',
+            'email' => ['required', 'string', 'email'],
+            'password' => 'required|string|min:8',
         ];
     }
 }
