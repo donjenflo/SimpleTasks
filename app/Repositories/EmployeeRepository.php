@@ -13,12 +13,13 @@ use App\Http\Resources\EmployeeResource;
 use App\Models\EmployeeStatus;
 use App\Models\User;
 use Illuminate\Http\Resources\Json\ResourceCollection;
+use Spatie\Permission\Models\Role;
 
 class EmployeeRepository
 {
     public function index(GetEmployeesDTO $employeesDTO): ResourceCollection
     {
-        $users = User::filter(new GetEmployeesFilter($employeesDTO))->with('employee_status')
+        $users = User::filter(new GetEmployeesFilter($employeesDTO))->with(['employee_status', 'roles'])
             ->orderBy($employeesDTO->orderBy ?? 'id', $employeesDTO->orderDirection ?? 'asc')
             ->paginate(10);
         return EmployeeResource::collection($users);
@@ -59,4 +60,32 @@ class EmployeeRepository
         return new EmployeeResource($employee);
     }
 
+    public function get(int $id): EmployeeResource
+    {
+        $employee = User::query()->with(['employee_status', 'roles'])->find($id);
+        if (!$employee) {
+            throw new EntityNotFoundException('Employee not found');
+        }
+        return new EmployeeResource($employee);
+    }
+
+    public function assignRole(int $id, int $roleId): void
+    {
+        $employee = User::query()->find($id);
+        if (!$employee) {
+            throw new EntityNotFoundException('Employee not found');
+        }
+        $role = Role::findById($roleId, 'api');
+        $employee->assignRole($role);
+    }
+
+    public function removeRole(int $id, int $roleId): void
+    {
+        $employee = User::query()->find($id);
+        if (!$employee) {
+            throw new EntityNotFoundException('Employee not found');
+        }
+        $role = Role::findById($roleId, 'api');
+        $employee->removeRole($role);
+    }
 }

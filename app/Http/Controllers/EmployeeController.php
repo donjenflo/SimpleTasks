@@ -121,5 +121,82 @@ class EmployeeController extends Controller
         }
     }
 
+    public function get(int $id): JsonResponse|JsonResource
+    {
+        try {
+            return $this->employeeRepository->get($id);
+        } catch (\Exception $exception) {
+            return response()->json([
+                'data' => '',
+                'message' => [
+                    'title' => 'Ошибка',
+                    'body' => $exception->getMessage(),
+                ]
+            ], $exception->statusCode ?? Response::HTTP_BAD_REQUEST);
+        } catch (\Throwable $throwable) {
+            Log::error($throwable);
+            return response()->json([
+                'data' => '',
+                'message' => [
+                    'title' => 'Ошибка',
+                    'body' => $throwable->getMessage(),
+                ]
+            ], $throwable->statusCode ?? Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public function assignRole(int $id, int $roleId): JsonResponse
+    {
+        try {
+             $this->employeeRepository->assignRole($id, $roleId);
+            return response()->json([
+                'data' => 'success',
+            ]);
+        } catch (\Exception $exception) {
+            return response()->json([
+                'data' => '',
+                'message' => [
+                    'title' => 'Ошибка',
+                    'body' => $exception->getMessage(),
+                ]
+            ], $exception->statusCode ?? Response::HTTP_BAD_REQUEST);
+        } catch (\Throwable $throwable) {
+            Log::error($throwable);
+            return response()->json([
+                'data' => '',
+                'message' => [
+                    'title' => 'Ошибка',
+                    'body' => $throwable->getMessage(),
+                ]
+            ], $throwable->statusCode ?? Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public function removeRole(int $id, int $roleId): JsonResponse
+    {
+        try {
+            $this->employeeRepository->removeRole($id, $roleId);
+            return response()->json([
+                'data' => 'success',
+            ]);
+        } catch (\Exception $exception) {
+            return response()->json([
+                'data' => '',
+                'message' => [
+                    'title' => 'Ошибка',
+                    'body' => $exception->getMessage(),
+                ]
+            ], $exception->statusCode ?? Response::HTTP_BAD_REQUEST);
+        } catch (\Throwable $throwable) {
+            Log::error($throwable);
+            return response()->json([
+                'data' => '',
+                'message' => [
+                    'title' => 'Ошибка',
+                    'body' => $throwable->getMessage(),
+                ]
+            ], $throwable->statusCode ?? Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
 
 }

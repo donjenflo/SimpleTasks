@@ -21,6 +21,9 @@ class EmployeeResource extends JsonResource
             'employee_status' => $this->whenLoaded('employee_status', function () {
                 return new EmployeeStatusResource($this->employee_status);
                 }),
+            'roles'  => $this->whenLoaded('roles', function () {
+                return RoleResource::collection($this->roles);
+            })
         ];
     }
 }
