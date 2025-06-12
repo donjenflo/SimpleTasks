@@ -6,6 +6,7 @@ namespace App\Models;
 use App\Filters\Filterable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -54,5 +55,10 @@ class User extends Authenticatable
     public function employee_status(): BelongsTo
     {
         return $this->belongsTo(EmployeeStatus::class);
+    }
+
+    public function tasks(): BelongsToMany
+    {
+        return $this->belongsToMany(Task::class, 'employee_task', 'employee_id', 'task_id' );
     }
 }

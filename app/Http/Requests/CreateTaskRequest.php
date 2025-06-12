@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class IndexEmployeeRequest extends FormRequest
+class CreateTaskRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,11 +22,8 @@ class IndexEmployeeRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'string',
-            'email' => 'email',
-            'employee_status_id' => 'integer|exists:employee_statuses,id',
-            'order_direction' => 'string|in:asc,desc',
-            'order_by' => 'string|in:name,email,employee_status_id',
+            'title' => 'string|required',
+            'description' => 'string|required',
         ];
     }
 }

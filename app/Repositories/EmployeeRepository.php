@@ -13,16 +13,17 @@ use App\Http\Resources\EmployeeResource;
 use App\Models\EmployeeStatus;
 use App\Models\User;
 use Illuminate\Http\Resources\Json\ResourceCollection;
+use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
 
 class EmployeeRepository
 {
     public function index(GetEmployeesDTO $employeesDTO): ResourceCollection
     {
-        $users = User::filter(new GetEmployeesFilter($employeesDTO))->with(['employee_status', 'roles'])
+        $employees = User::filter(new GetEmployeesFilter($employeesDTO))->with(['employee_status', 'roles'])
             ->orderBy($employeesDTO->orderBy ?? 'id', $employeesDTO->orderDirection ?? 'asc')
             ->paginate(10);
-        return EmployeeResource::collection($users);
+        return EmployeeResource::collection($employees);
     }
 
     public function store(EmployeeDTO $createEmployeeDTO): EmployeeResource
@@ -39,11 +40,16 @@ class EmployeeRepository
 
     public function destroy(int $id): void
     {
-        $user = User::query()->find($id);
-        if (!$user) {
-            throw new EntityNotFoundException('Employee not found');
-        }
-        $user->delete();
+        DB::transaction(function () use ($id) {
+            $employee = User::query()->find($id);
+
+            if (!$employee) {
+                throw new EntityNotFoundException('Employee not found');
+            }
+
+            $employee->tasks()->detach();
+            $employee->delete();
+        });
     }
 
     public function update(int $id, EmployeeDTO $updateEmployeeDTO): EmployeeResource

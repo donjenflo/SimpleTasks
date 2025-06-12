@@ -2,6 +2,8 @@
 
 namespace App\Console\Commands;
 
+use App\Events\TaskStatusChanged;
+use App\Models\Task;
 use App\Models\User;
 use Illuminate\Console\Command;
 
@@ -26,8 +28,8 @@ class TestCommand extends Command
      */
     public function handle()
     {
-        $user = User::query()->first();
-        $user->assignRole('Программист');
-        $user->removeRole('Менеджер2');
+        $task = Task::first();
+        event(new TaskStatusChanged($task, 2));
+
     }
 }
