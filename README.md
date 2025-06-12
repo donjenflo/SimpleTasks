@@ -6,6 +6,7 @@ php artisan key:generate
 
 ./vendor/bin/sail build
 ./vendor/bin/sail up -d
+./vendor/bin/sail artisan migrate
 ```
 Запуск тестов
 ```
