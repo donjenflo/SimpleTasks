@@ -40,7 +40,7 @@ class TaskRepository
 
     public function get(int $id): TaskResource
     {
-        $task = Task::query()->with(['employees,status'])->find($id);
+        $task = Task::query()->with(['employees', 'status'])->find($id);
         if (!$task) {
             throw new EntityNotFoundException('Task not found');
         }
@@ -69,7 +69,7 @@ class TaskRepository
         $task->delete();
     }
 
-    public function attachEmployee(int $id, int $employeeId): TaskResource
+    public function attachEmployee(int $id, int $employeeId): void
     {
         $task = Task::query()->with(['employees', 'status'])->find($id);
         if (!$task) {
@@ -81,10 +81,9 @@ class TaskRepository
         }
         $task->employees()->attach($employee);
 
-        return new TaskResource($task);
     }
 
-    public function detachEmployee(int $id, int $employeeId): TaskResource
+    public function detachEmployee(int $id, int $employeeId): void
     {
         $task = Task::query()->with(['employees', 'status'])->find($id);
         if (!$task) {
@@ -96,6 +95,19 @@ class TaskRepository
         }
         $task->employees()->detach($employee);
 
-        return new TaskResource($task);
+    }
+
+    public function updateStatus(int $id, int $statusId): void
+    {
+        $task = Task::query()->with(['status'])->find($id);
+        if (!$task) {
+            throw new EntityNotFoundException('Task not found');
+        }
+        if (!TaskStatus::query()->find($statusId)) {
+            throw new EntityNotFoundException('Status not found');
+        }
+        $task->status_id = $statusId;
+        $task->save();
+
     }
 }

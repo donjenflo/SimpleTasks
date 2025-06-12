@@ -199,4 +199,31 @@ class EmployeeController extends Controller
         }
     }
 
+    public function updateEmployeeStatus(int $id, int $employeeStatusId): JsonResponse
+    {
+        try {
+            $this->employeeRepository->updateEmployeeStatus($id, $employeeStatusId);
+            return response()->json([
+                'data' => 'success',
+            ]);
+        } catch (\Exception $exception) {
+            return response()->json([
+                'data' => '',
+                'message' => [
+                    'title' => 'Ошибка',
+                    'body' => $exception->getMessage(),
+                ]
+            ], $exception->statusCode ?? Response::HTTP_BAD_REQUEST);
+        } catch (\Throwable $throwable) {
+            Log::error($throwable);
+            return response()->json([
+                'data' => '',
+                'message' => [
+                    'title' => 'Ошибка',
+                    'body' => $throwable->getMessage(),
+                ]
+            ], $throwable->statusCode ?? Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
 }

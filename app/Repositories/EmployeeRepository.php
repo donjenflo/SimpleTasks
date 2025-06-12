@@ -94,4 +94,17 @@ class EmployeeRepository
         $role = Role::findById($roleId, 'api');
         $employee->removeRole($role);
     }
+
+    public function updateEmployeeStatus(int $id, int $employeeStausId): void
+    {
+        $employee = User::query()->find($id);
+        if (!$employee) {
+            throw new EntityNotFoundException('Employee not found');
+        }
+        if (!EmployeeStatus::query()->find($employeeStausId)) {
+            throw new EntityNotFoundException('Employee status not found');
+        }
+        $employee->employee_status_id = $employeeStausId;
+        $employee->save();
+    }
 }

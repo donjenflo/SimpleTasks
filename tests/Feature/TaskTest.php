@@ -1,6 +1,6 @@
 <?php
 
-namespace Feature;
+namespace Tests\Feature;
 
 use App\Models\User;
 use Database\Seeders\TaskSeeder;
@@ -9,7 +9,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 /**
- * @group Employees
+ * @group Tasks
  */
 class TaskTest extends TestCase
 {
@@ -27,45 +27,69 @@ class TaskTest extends TestCase
 
     }
 
-    public function test_employee_index(): void
+    public function test_task_index(): void
     {
         $queryParams = [
-            'name' => $this->user->name,
-            'email' => $this->user->email,
-            'employee_status_id' => 1,
+            'title' => 'Test',
             'orderBy' => 'id',
             'orderDirection' => 'asc',
         ];
-        $response = $this->get('/api/employees',$queryParams);
+        $response = $this->get('/api/tasks', $queryParams);
         $response->assertStatus(200);
     }
 
-    public function test_employee_create(): void
+    public function test_task_create(): void
     {
         $data = [
-            'name' => 'Test User',
-            'email' => 'test@test.com',
-            'password' => bcrypt('password'),
+            'title' => 'Test',
+            'description' => 'foo',
         ];
-        $response = $this->json('POST', '/api/employee', $data);
+        $response = $this->post('/api/task', $data);
         $response->assertStatus(201);
+        $this->post('/api/task', $data);
+        $response = $this->post('/api/task', $data);
+        //по задаче можно 2 в минуту
+        $response->assertStatus(429);
     }
 
-    public function test_employee_delete(): void
-    {
-        $employeeId = User::query()->whereNot('id',$this->user->id)->first()->id;
-        $response = $this->delete( '/api/employee/'.$employeeId );
-        $response->assertStatus(200);
-    }
-    public function test_employee_update(): void
+    public function test_task_update(): void
     {
         $data = [
-            'name' => 'Test Update',
-            'email' => 'test@update.com',
-            'password' => bcrypt('password'),
+            'title' => 'Test',
+            'description' => 'foo',
         ];
-        $employeeId = User::query()->whereNot('id',$this->user->id)->first()->id;
-        $response = $this->put( '/api/employee/'.$employeeId, $data );
+        $response = $this->put('/api/task/1', $data);
         $response->assertStatus(200);
     }
+
+    public function  test_task_delete(): void
+    {
+        $response = $this->delete('/api/task/1');
+        $response->assertStatus(200);
+    }
+
+    public function test_task_get(): void
+    {
+        $response = $this->get('/api/task/1');
+        $response->assertStatus(200);
+    }
+    public function test_task_update_status(): void
+    {
+        $response = $this->put('/api/task/1/status/1');
+        $response->assertStatus(200);
+    }
+
+    public function test_task_attach_employee(): void
+    {
+        $response = $this->post('/api/task/1/employee/1');
+        $response->assertStatus(200);
+    }
+
+    public function test_task_detach_employee(): void
+    {
+        $response = $this->delete('/api/task/1/employee/1');
+        $response->assertStatus(200);
+    }
+
+
 }
